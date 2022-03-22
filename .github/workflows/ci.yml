@@ -13,6 +13,15 @@ jobs:
         with:
           node-version: v16.11.0
 
+      - name: Cache node modules
+        uses: actions/cache@v2.1.7
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('package-lock.json') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+
       - name: Install dependencies
         run: npm install
 
@@ -39,7 +48,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ref-lcov.info
-
+          
+      - name: Cache node modules
+        uses: actions/cache@v2.1.7
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('package-lock.json') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
       - name: Install dependencies
         run: npm install
 
