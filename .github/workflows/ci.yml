@@ -7,8 +7,38 @@ on:
   pull_request:
 
 jobs:
+  base_branch_cov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.base_ref }}
+      - name: Cache node modules
+        uses: actions/cache@v2.1.7
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('package-lock.json') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Run test coverage
+        run: npm run test:cov
+
+      - name: Upload code coverage for ref branch
+        uses: actions/upload-artifact@v2
+        with:
+          name: ref-lcov.info
+          path: ./coverage/lcov.info
   checks:
     runs-on: ubuntu-latest
+    needs: base_branch_cov
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.11.0
