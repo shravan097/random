@@ -9,4 +9,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  somethingNew(): Array<string> {
+    const item = ['a', 'b', 'c'];
+    if (item.length == 4) {
+      item.pop();
+    } else {
+      item.push('d');
+    }
+    return item;
+  }
 }
